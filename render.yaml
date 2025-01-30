@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: api-dofus
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port 10000"
+    envVars:
+      - key: USERNAME_MONGODB
+        fromDatabase: true
+      - key: PASSWORD_MONGODB
+        fromDatabase: true
