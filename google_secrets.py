@@ -12,4 +12,7 @@ def get_secret(secret_name):
 username = get_secret("USERNAME_MONGODB")
 password = get_secret("PASSWORD_MONGODB")
 
-connection_string = f"mongodb+srv://{username}:{password}@dofusquest.j66xz.mongodb.net/"
+connection_string = (
+    f"mongodb+srv://{username}:{password}@dofusquest.j66xz.mongodb.net/"
+    "?ssl=true&ssl_cert_reqs=CERT_NONE"
+)
