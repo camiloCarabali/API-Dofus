@@ -9,3 +9,18 @@ services:
         fromDatabase: true
       - key: PASSWORD_MONGODB
         fromDatabase: true
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        value: |
+          {
+            "type": "service_account",
+            "project_id": "api-dofus-449401",
+            "private_key_id": "42683e3584b65dde8bc1c673328782959b1d9ca4",
+            "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDaFy54mMDh6tkR\n5F4bUUdPS+8xLYQEQETJhQ41Y8W41+XWfoRNDJtV6V48gAJXYV1aFzIAdFqP1Xaf\nkPPAHtjacIP1x5EVznnMsVthKXOAse+S16tfYuzhmqocn+6DhqTyE2QOLN7Jei0e\nTtuBrFKTC0BXy5eqCCawU1LgvXxkxklWs1aTntUHeRIXXMpdQ832wGKSrcn1rgFA\n4ieyX5Vgz2Un/VsqEABP0SwZizqD87H4/b/uqZuSUS6dbf0hw2w/dzJ8HjIJUdHV\n23O7AjF0G+NihnYnDqfHm0HMcXJ+HDByJsJ/MYCuFgqQzf3ijzb+SNjn+uxttj/s\nGiA1UHE3AgMBAAECgf8PDN/SyA0yNK1w4/xFO6wFd41fghnvhn/jaEs9Y/qWcaUV\nfaWjq5BiCA4jdAdgAFgbiijpNHO2JAULqJ/UTPdUxm7/hxt8EG5XXJCceT/Uocg8\nBKYkRFoUjO0wYdkT5TbSKIRpy1mUjdnkkuHoZlFMfyTxlMXioK1gKF/lIoPIcHCt\nD3Wlz8zCcfiGO4weryqA/0if5jF+L/IEt7y9ka+PCk/YbABKI/353+n/n1rrnWlL\nvpEHTuGfcsGW83+U5tbRHap55P1mlXEq2I939glesDLRWO4tElgR54veleBUCFs5\nv9QR20hMuGlg+4G+UtD6KM5LhRJ76InITRRJb0ECgYEA7PslQ4ImagecbLU0hf78\nibU1KqO4NYlMSCRi1EPwTdxhzOVI7tzAi6QdkfWAwr4hLgzcrbSORgYWtxQPxcb5\nf2iWG72erutHLK7QbRBQO9nRCNAc9ipGEMzByz9Eak0DHYugdV88K2jEhHwVo2hs\nHvBlumXzc1q86ne3qaQmpiECgYEA65fstrHEC8ct1iBq2dOtY1dUVZCJH6Wop6PL\nUZ8gpkTGaZ2Bg82r+jm1MbbVCnj5LkWlevN4ad5lRq9rbm0kboCWeG3sryQ4ZSLe\nqypiL5ly62PcPnCtu5HQiFFNsn+zYUWY1v3hvUVHN1xK6oZBn8XJSDmwCeydPPRM\nURD2fFcCgYEAxMVwVpKt9OJm9ziq6Qwlgu6Mu9//Z6yeQ1S7HwdedDgmmOxVV8jC\ns/BMgVJ5XLpkcIlLf4xpiikqGVA2HIGvzyP3aAdVyGYhzi9FbxnZlSiyUgAD3D6T\nuQVbcLkSxLU3fgPe8zZljqHKcztY+DsPc80mmtRmhgT00jcfsGNVmCECgYEArqd1\nZEdLCFRD5c8oh43Gp7PRIJHDJkQAUS87hqoKYVjxItESd+zchueLLWzWaSofyK73\nK7wdU5b8y7c2VKny7TzE0Ejlwz191XRRUOFd4t3GdT0VxPBxy3EhAD4N9Lt49y7K\nTO/wDwmx7xerrkuTkOfm/XVOzTytoMeXYC3MHYcCgYEA6A6+jUTacsWzgeC5gYD7\nuHctAzloOT6+x5VtivvjLhNrtES5yUC+cWBMiod/ybkODYsRBlSxhDUO+A25EYo5\nhPojxwcDEu5/4xhsmQBHdjIDEyax0d1qSPiIXBl1JY/naDA75Ar2V+77Y7SDuaTq\nOrkaX6bA4cGzEYSjuHJfniM=\n-----END PRIVATE KEY-----\n",
+            "client_email": "api-dofus@api-dofus-449401.iam.gserviceaccount.com",
+            "client_id": "100464240730753739309",
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/api-dofus%40api-dofus-449401.iam.gserviceaccount.com",
+            "universe_domain": "googleapis.com"
+          }
