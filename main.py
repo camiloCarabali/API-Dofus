@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field
 from fastapi import FastAPI, HTTPException, Query
 from pymongo import MongoClient
-from bson.json_util import dumps
 from google_secrets import connection_string
 
 client = MongoClient(connection_string)
@@ -28,8 +27,20 @@ class Mission(BaseModel):
 @app.get("/achievements")
 def get_achievements():
     try:
-        achievements = list(collection_achievement.find())
-        return dumps(achievements)
+        achievements = collection_achievement.find({}, {"_id": 1, "name": 1})
+        return [{"id": str(achievement["_id"]), "name": achievement["name"]} for achievement in achievements]
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/missions")
+def get_missions():
+    try:
+        missions = list(
+            collection_mission.find({}, {"_id": 1, "nombre": 1, "video": 1, "checklist": 1, "achievement_id": 1}))
+        return [{"id": str(mission["_id"]), "nombre": mission["nombre"], "video": mission["video"],
+                 "checklist": mission["checklist"], "achievement_id": mission["achievement_id"]} for mission in
+                missions]
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
