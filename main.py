@@ -20,7 +20,7 @@ class Achievement(BaseModel):
 
 
 class Mission(BaseModel):
-    nombre: str
+    name: str
     video: str
     achievement_id: str = Field(..., description="ID of the associated achievement")
 
@@ -48,8 +48,8 @@ def get_achievements():
 def get_missions():
     try:
         missions = list(
-            collection_mission.find({}, {"_id": 1, "nombre": 1, "video": 1, "checklist": 1, "achievement_id": 1}))
-        return [{"id": str(mission["_id"]), "nombre": mission["nombre"], "video": mission["video"],
+            collection_mission.find({}, {"_id": 1, "name": 1, "video": 1, "checklist": 1, "achievement_id": 1}))
+        return [{"id": str(mission["_id"]), "name": mission["name"], "video": mission["video"],
                  "checklist": mission["checklist"], "achievement_id": mission["achievement_id"]} for mission in
                 missions]
     except Exception as e:
@@ -94,11 +94,11 @@ def create_achievement(
 
 @app.post("/mission/create", response_model=Mission)
 def create_mission(
-        nombre: str = Query(..., description="Name of the mission"),
+        name: str = Query(..., description="Name of the mission"),
         video: str = Query(..., description="Video URL of the mission"),
         achievement_id: str = Query(..., description="ID of the associated achievement")
 ):
-    mission = Mission(nombre=nombre, video=video, achievement_id=str(achievement_id))
+    mission = Mission(name=name, video=video, achievement_id=str(achievement_id))
     try:
         result = collection_mission.insert_one(mission.model_dump(by_alias=True))
         mission_data = mission.model_dump(by_alias=True)
