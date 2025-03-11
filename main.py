@@ -114,10 +114,16 @@ def create_user(
 ):
     user = User(email=email)
     try:
+        existing_user = collection_user.find_one({"email": email})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="User already exists")
+
         result = collection_user.insert_one(user.model_dump())
         user_data = user.model_dump()
         user_data["id"] = str(result.inserted_id)
         return user_data
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
