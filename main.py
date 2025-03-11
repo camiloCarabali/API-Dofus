@@ -7,6 +7,8 @@ client = MongoClient(connection_string)
 db = client["Codex"]
 collection_achievement = db["Logros"]
 collection_mission = db["Misiones"]
+collection_user = db["Usuarios"]
+collection_mission_user = db["Misiones_Usuarios"]
 
 app = FastAPI()
 
@@ -20,8 +22,17 @@ class Achievement(BaseModel):
 class Mission(BaseModel):
     nombre: str
     video: str
-    checklist: bool = Field(default=False, description="Checklist status for the mission")
     achievement_id: str = Field(..., description="ID of the associated achievement")
+
+
+class User(BaseModel):
+    email: str
+
+
+class MissionUser(BaseModel):
+    user_id: str = Field(..., description="ID of the user")
+    mission_id: str = Field(..., description="ID of the mission")
+    complete: bool = Field(False, description="Completion status of the mission")
 
 
 @app.get("/achievements")
@@ -41,6 +52,26 @@ def get_missions():
         return [{"id": str(mission["_id"]), "nombre": mission["nombre"], "video": mission["video"],
                  "checklist": mission["checklist"], "achievement_id": mission["achievement_id"]} for mission in
                 missions]
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/users")
+def get_users():
+    try:
+        users = collection_user.find({}, {"_id": 1, "email": 1})
+        return [{"id": str(user["_id"]), "email": user["email"]} for user in users]
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/mission_users")
+def get_mission_users():
+    try:
+        mission_users = collection_mission_user.find({}, {"_id": 1, "user_id": 1, "mission_id": 1, "complete": 1})
+        return [{"id": str(mission_user["_id"]), "user_id": mission_user["user_id"],
+                 "mission_id": mission_user["mission_id"], "complete": mission_user["complete"]} for mission_user in
+                mission_users]
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -65,14 +96,43 @@ def create_achievement(
 def create_mission(
         nombre: str = Query(..., description="Name of the mission"),
         video: str = Query(..., description="Video URL of the mission"),
-        checklist: bool = Query(False, description="Checklist status for the mission"),
         achievement_id: str = Query(..., description="ID of the associated achievement")
 ):
-    mission = Mission(nombre=nombre, video=video, checklist=checklist, achievement_id=str(achievement_id))
+    mission = Mission(nombre=nombre, video=video, achievement_id=str(achievement_id))
     try:
         result = collection_mission.insert_one(mission.model_dump(by_alias=True))
         mission_data = mission.model_dump(by_alias=True)
         mission_data["id"] = str(result.inserted_id)
         return mission_data
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/user/create", response_model=User)
+def create_user(
+        email: str = Query(..., description="Email of the user")
+):
+    user = User(email=email)
+    try:
+        result = collection_user.insert_one(user.model_dump())
+        user_data = user.model_dump()
+        user_data["id"] = str(result.inserted_id)
+        return user_data
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/mission_user/create", response_model=MissionUser)
+def create_mission_user(
+        user_id: str = Query(..., description="ID of the user"),
+        mission_id: str = Query(..., description="ID of the mission"),
+        complete: bool = Query(False, description="Completion status of the mission")
+):
+    mission_user = MissionUser(user_id=user_id, mission_id=mission_id, complete=complete)
+    try:
+        result = collection_mission_user.insert_one(mission_user.model_dump())
+        mission_user_data = mission_user.model_dump()
+        mission_user_data["id"] = str(result.inserted_id)
+        return mission_user_data
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
