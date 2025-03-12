@@ -1,3 +1,4 @@
+from bson import ObjectId
 from pydantic import BaseModel, Field
 from fastapi import FastAPI, HTTPException, Query
 from pymongo import MongoClient
@@ -27,6 +28,7 @@ class Mission(BaseModel):
 
 class User(BaseModel):
     email: str
+    mission_status: bool = Field(False, description="Status of the user's mission")
 
 
 class MissionUser(BaseModel):
@@ -59,8 +61,9 @@ def get_missions():
 @app.get("/users")
 def get_users():
     try:
-        users = collection_user.find({}, {"_id": 1, "email": 1})
-        return [{"id": str(user["_id"]), "email": user["email"]} for user in users]
+        users = collection_user.find({}, {"_id": 1, "email": 1, "mission_status": 1})
+        return [{"id": str(user["_id"]), "email": user["email"], "mission_status": user.get("mission_status", False)}
+                for user in users]
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -110,14 +113,21 @@ def create_mission(
 
 @app.post("/user/create", response_model=User)
 def create_user(
-        email: str = Query(..., description="Email of the user")
+        email: str = Query(..., description="Email of the user"),
+        mission_status: bool = Query(False, description="Status of the user's mission")
 ):
-    user = User(email=email)
+    user = User(email=email, mission_status=mission_status)
     try:
+        existing_user = collection_user.find_one({"email": email})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="User already exists")
+
         result = collection_user.insert_one(user.model_dump())
         user_data = user.model_dump()
         user_data["id"] = str(result.inserted_id)
         return user_data
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -136,3 +146,38 @@ def create_mission_user(
         return mission_user_data
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.put("/mission_user/update_complete/{id}", response_model=MissionUser)
+def update_mission_user_complete(id: str, complete: bool = Query(..., description="Completion status of the mission")):
+    try:
+        if not ObjectId.is_valid(id):
+            raise HTTPException(status_code=400, detail="Invalid ID format")
+
+        result = collection_mission_user.update_one({"_id": ObjectId(id)}, {"$set": {"complete": complete}})
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="MissionUser not found")
+
+        mission_user = collection_mission_user.find_one({"_id": ObjectId(id)})
+        mission_user["id"] = str(mission_user["_id"])
+        return mission_user
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.put("/user/update_mission_status/{id}", response_model=User)
+def update_user_mission_status(id: str, mission_status: bool = Query(..., description="Status of the user's mission")):
+    try:
+        if not ObjectId.is_valid(id):
+            raise HTTPException(status_code=400, detail="Invalid ID format")
+
+        result = collection_user.update_one({"_id": ObjectId(id)}, {"$set": {"mission_status": mission_status}})
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        user = collection_user.find_one({"_id": ObjectId(id)})
+        user["id"] = str(user["_id"])
+        return user
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
