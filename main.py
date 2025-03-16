@@ -45,9 +45,9 @@ def get_achievements():
 def get_missions():
     try:
         missions = list(
-            collection_mission.find({}, {"_id": 1, "name": 1, "video": 1, "checklist": 1, "achievement_id": 1}))
-        return [{"id": str(mission["_id"]), "name": mission["name"], "video": mission["video"],
-                 "checklist": mission["checklist"], "achievement_id": mission["achievement_id"]} for mission in
+            collection_mission.find({}, {"_id": 1, "name": 1, "achievement_id": 1}))
+        return [{"id": str(mission["_id"]), "name": mission["name"], "achievement_id": mission["achievement_id"]} for
+                mission in
                 missions]
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
