@@ -104,6 +104,3 @@ dmypy.json
 
 # profiling data
 .prof
-
-#proyect
-missions.json
