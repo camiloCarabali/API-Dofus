@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from fastapi import FastAPI, HTTPException, Query
 from pymongo import MongoClient
 from google_secrets import connection_string
+from fastapi.middleware.cors import CORSMiddleware
 import json
 
 client = MongoClient(connection_string)
@@ -13,6 +14,14 @@ collection_user = db["Usuarios"]
 collection_mission_user = db["Misiones_Usuarios"]
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Achievement(BaseModel):
