@@ -11,3 +11,5 @@ services:
         fromDatabase: true
       - key: GOOGLE_APPLICATION_CREDENTIALS
         value: /etc/secrets/api-dofus-449401-0e57d49ea6d3.json
+      - key: ALLOWED_ORIGINS
+        value: https://dofusquest.app,capacitor://localhost,http://localhost:8100
